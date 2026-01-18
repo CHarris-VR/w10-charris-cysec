@@ -5,4 +5,4 @@ incorrect and make proper changes
 
 Link to git hub for files:
 
-https://github.com/CHarris-VR/w10-charris-cysec/tree/main
+https://github.com/CHarris-VR/w10-charris-cysec
