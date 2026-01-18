@@ -25,6 +25,8 @@ class Alert:
         self.alert_type = alert_type  # now an AlertType
         self.asset = asset
         self.indicator = indicator
+
+    # Severity def    
     def severity(self):
         if self.alert_type == AlertType.FILE_HASH_DETECTED:
             return "HIGH"
@@ -32,6 +34,24 @@ class Alert:
             return "MEDIUM"
         else:
             return "LOW"
+    # Classification indicator
+    def classify_indicator(self):
+        if self.indicator.startswith("10.") or self.indicator.startswith("192.168."):
+            self.classification = "internal"
+        elif "." in self.indicator:
+            self.classification = "external"
+        else:
+            self.classification = "N/A"
+
+        return self.classification
+    
+    #Challenge B
+    def __str__(self):
+        return f"{self.date} [{self.severity()}] {self.alert_type.value} on {self.asset} -> {self.indicator}"
+
+
+
+
 
 with open("alerts.txt", "r", encoding="utf-8") as f:
     lines = f.read().splitlines()
@@ -43,7 +63,9 @@ alerts = []
 for line in lines:
     date, alert_type_str, asset, indicator = line.split(",")
     alert_type = AlertType(alert_type_str)  # string → enum
+
     alerts.append(Alert(date, alert_type, asset, indicator))
+
 
 # Test
 print(alerts[0].alert_type, alerts[0].severity())
@@ -73,6 +95,9 @@ print(AlertType.FILE_HASH_DETECTED.value)
 print(alerts[0].alert_type == AlertType.LOGIN_FAILURE)
 # True or False
 
+# Test Print:
+for a in alerts:
+    print(a)
 
 # writes a report to incident_summary.txt
 with open("incident_summary.txt", "w", encoding="utf-8") as out:

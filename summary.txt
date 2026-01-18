@@ -1,0 +1,8 @@
+I sturggled heavily with understanding where to put specific aspects of the code
+however with some help and understanding from various sources I was able to figure out why things were 
+incorrect and make proper changes
+
+
+Link to git hub for files:
+
+https://github.com/CHarris-VR/w10-charris-cysec/tree/main
