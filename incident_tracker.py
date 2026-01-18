@@ -14,6 +14,16 @@ print(f"Loaded {len(lines)} alerts.")
 #    date, alert_type, asset, indicator = line.split(",")
 #    records.append((date, alert_type, asset, indicator))
 
+
+# Step 7 Adding definition to the enum (moved alert 7 above records
+# to fix error at line 32.)
+class AlertType(Enum):
+    LOGIN_FAILURE = "login_failure"
+    LOGIN_SUCCESS = "login_success"
+    FILE_HASH_DETECTED = "file_hash_detected"
+    DNS_QUERY = "dns_query"
+    PORT_SCAN = "port_scan"
+
 ## Convert Strings into Enum Values
 records = []
 for line in lines:
@@ -25,13 +35,7 @@ for line in lines:
 # Printing to see first tuple 
 print(records[0])
 
-# Step 7 Adding definition to the enum
-class AlertType(Enum):
-    LOGIN_FAILURE = "login_failure"
-    LOGIN_SUCCESS = "login_success"
-    FILE_HASH_DETECTED = "file_hash_detected"
-    DNS_QUERY = "dns_query"
-    PORT_SCAN = "port_scan"
+
 
 
 # modifying and update Alert Class to use Enum and Severity Logic
