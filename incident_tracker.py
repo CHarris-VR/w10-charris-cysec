@@ -2,12 +2,6 @@
 from enum import Enum
 
 
-# Reading the files
-with open("alerts.txt", "r", encoding="utf-8") as f:
-    lines = f.read().splitlines()
-
-print(f"Loaded {len(lines)} alerts.")
-
 # Parse each line into parts (Original)
 # records = []
 #for line in lines:
@@ -24,48 +18,38 @@ class AlertType(Enum):
     DNS_QUERY = "dns_query"
     PORT_SCAN = "port_scan"
 
-## Convert Strings into Enum Values
-records = []
-for line in lines:
-    date, alert_type_str, asset, indicator = line.split(",")
-
-    alert_type = AlertType(alert_type_str)
-    records.append((date, alert_type, asset, indicator))
-
-# Printing to see first tuple 
-print(records[0])
-
-
-
-
-# modifying and update Alert Class to use Enum and Severity Logic
+    # modifying and update Alert Class to use Enum and Severity Logic
 class Alert:
     def __init__(self, date, alert_type, asset, indicator):
         self.date = date
         self.alert_type = alert_type  # now an AlertType
         self.asset = asset
         self.indicator = indicator
+    def severity(self):
+        if self.alert_type == AlertType.FILE_HASH_DETECTED:
+            return "HIGH"
+        elif self.alert_type in [AlertType.PORT_SCAN, AlertType.DNS_QUERY]:
+            return "MEDIUM"
+        else:
+            return "LOW"
 
-def severity(self):
-    if self.alert_type == AlertType.FILE_HASH_DETECTED:
-        return "HIGH"
-    elif self.alert_type in [AlertType.PORT_SCAN, AlertType.DNS_QUERY]:
-        return "MEDIUM"
-    else:
-        return "LOW"
+with open("alerts.txt", "r", encoding="utf-8") as f:
+    lines = f.read().splitlines()
 
-       
-# adding step 4
+print(f"Loaded {len(lines)} alerts.")
+
+# Convert lines → Alert objects
 alerts = []
-for date, alert_type, asset, indicator in records:
+for line in lines:
+    date, alert_type_str, asset, indicator = line.split(",")
+    alert_type = AlertType(alert_type_str)  # string → enum
     alerts.append(Alert(date, alert_type, asset, indicator))
 
+# Test
 print(alerts[0].alert_type, alerts[0].severity())
 
-# replace "magic strings" with enum values
-high = 0
-medium = 0
-low = 0
+# Severity counts
+high = medium = low = 0
 
 for a in alerts:
     sev = a.severity()
@@ -80,3 +64,21 @@ print("\n=== Summary ===")
 print(f"HIGH: {high}")
 print(f"MEDIUM: {medium}")
 print(f"LOW: {low}")
+
+print(AlertType.FILE_HASH_DETECTED)
+# AlertType.FILE_HASH_DETECTED
+
+print(AlertType.FILE_HASH_DETECTED.value)
+# file_hash_detected
+print(alerts[0].alert_type == AlertType.LOGIN_FAILURE)
+# True or False
+
+
+# writes a report to incident_summary.txt
+with open("incident_summary.txt", "w", encoding="utf-8") as out:
+    out.write("Incident Triage Summary\n")
+    out.write("======================\n")
+    out.write(f"Total alerts: {len(alerts)}\n")
+    out.write(f"HIGH: {high}\n")
+    out.write(f"MEDIUM: {medium}\n")
+    out.write(f"LOW: {low}\n")
