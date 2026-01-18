@@ -76,6 +76,3 @@ print("\n=== Summary ===")
 print(f"HIGH: {high}")
 print(f"MEDIUM: {medium}")
 print(f"LOW: {low}")
-
-
-
